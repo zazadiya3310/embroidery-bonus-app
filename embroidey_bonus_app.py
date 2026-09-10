@@ -19,7 +19,7 @@ with st.form("production_form"):
     worker_name = st.text_input("कारीगर का नाम / Worker Name")
     machine_no = st.selectbox("मशीन नंबर / Machine No.", ["मशीन - १ / Machine - 1", "मशीन - २ / Machine - 2", "मशीन - ३ / Machine - 3", "मशीन - ४ / Machine - 4", "मशीन - ५ / Machine - 5"])
     
-    input_mode = st.radio("डेटा इनपुट का तरीका चुनें / Choose Data Input Method:", ["मैन्युअल टाइप करें / Type Manually", "मॉनिटर फोटो अपलोड करें / Upload Monitor Photo"])
+    input_mode = st.radio("डेटा इनपुट का तरीका चुनें / Choose Data Input Method:", ["मैन्युअल टाइप करें / Type Manually", "मॉनिटर फोटो खींचें / Capture Monitor Photo"])
     
     design_no = ""
     production = 0
@@ -27,9 +27,9 @@ with st.form("production_form"):
     stop_time = "0"
     frame_time = "0"
     
-    if input_mode == "मॉनिटर फोटो अपलोड करें / Upload Monitor Photo":
-        monitor_photo = st.file_uploader("मशीन के मॉनिटर का फोटो चुनें / Choose Monitor Photo", type=["jpg", "png", "jpeg"])
-        st.info("💡 फोटो अपलोड करने पर OCR द्वारा डेटा रीड किया जाएगा (फिलहाल आप नीचे मैन्युअल वैल्यू भी भर सकते हैं)।")
+    if input_mode == "मॉनिटर फोटो खींचें / Capture Monitor Photo":
+        monitor_photo = st.camera_input("मशीन के मॉनिटर का फोटो खींचें / Take Monitor Photo")
+        st.info("💡 फोटो खींचने के बाद नीचे दिए गए बॉक्स में वैल्यू भर सकते हैं।")
         design_no = st.text_input("डिजाइन नंबर (फोटो से / Manual) / Design No.")
         production = st.number_input("कुल टांके / Total Stitches", min_value=0, step=1000)
         breakage = st.number_input("टोटल ब्रेकेज / Total Breakage", min_value=0, step=1)
