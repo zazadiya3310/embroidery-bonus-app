@@ -24,22 +24,24 @@ if submit_button:
     else:
         bonus = 0
         if production <= 250000:
-            bonus = (production // 1000) * 50
+            bonus = (production / 1000) * 50
         elif production <= 300000:
-            bonus = (250000 // 1000) * 50 + ((production - 250000) // 1000) * 75
+            # ૨,૫૦,૦૦૦ સુધી ૫૦ રૂપિયા અને ઉપરના ભાગ પર (૫૦ + ૧) = ૫૧ રૂપિયા
+            bonus = (250000 / 1000) * 50 + ((production - 250000) / 1000) * 51
         else:
-            bonus = (250000 // 1000) * 50 + (50000 // 1000) * 75 + ((production - 300000) // 1000) * 100
+            # ૩,૦૦,૦૦૦ પછી બે રૂપિયા વધુ એટલે કે (૫૦ + ૨) = ૫૨ રૂપિયા પ્રતિ ૧૦૦૦ ટાંકા
+            bonus = (250000 / 1000) * 50 + (50000 / 1000) * 51 + ((production - 300000) / 1000) * 52
             
         new_row = pd.DataFrame({
             'तारीख / Date': [str(date)],
             'कारीगर का नाम / Worker Name': [worker_name],
             'मशीन नंबर / Machine No.': [machine_no],
             'कुल प्रोडक्शन (टाका अथवा पीस) / Production': [production],
-            'बोनस (₹) / Bonus': [bonus]
+            'बोनस (₹) / Bonus': [round(bonus, 2)]
         })
         
         st.session_state.data = pd.concat([st.session_state.data, new_row], ignore_index=True)
-        st.success(f"बोनस सफलतापूर्वक जोड़ दिया गया है! कुल बोनस: ₹ {bonus} / Bonus calculated successfully! Total Bonus: ₹ {bonus}")
+        st.success(f"बोनस सफलतापूर्वक जोड़ दिया गया है! कुल बोनस: ₹ {round(bonus, 2)} / Bonus calculated successfully! Total Bonus: ₹ {round(bonus, 2)}")
 
 st.markdown("---")
 st.subheader("📊 कुल प्रोडक्शन और बोनस रिपोर्ट / Production and Bonus Report")
