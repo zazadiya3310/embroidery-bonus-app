@@ -1,4 +1,4 @@
-[11-09-2026 00:12] Ganga traders: import streamlit as st
+import streamlit as st
 import pandas as pd
 
 st.set_page_config(page_title="Embroidery Machine Bonus / एम्ब्रॉयडरी मशीन बोनस", layout="centered")
