@@ -12,35 +12,26 @@ if 'data' not in st.session_state:
         'स्टॉप टाइम / Stop Time', 'फ्रेम टाइम / Frame Time', 'बोनस (₹) / Bonus'
     ])
 
+# 1. इनपुट मोड और कैमरा को फॉर्म के बाहर रखा गया है
+input_mode = st.radio("डेटा इनपुट का तरीका चुनें / Choose Data Input Method:", ["मैन्युअल टाइप करें / Type Manually", "मॉनिटर फोटो खींचें / Capture Monitor Photo"])
+
+monitor_photo = None
+if input_mode == "मॉनिटर फोटो खींचें / Capture Monitor Photo":
+    monitor_photo = st.camera_input("मशीन के मॉनिटर का फोटो खींचें / Take Monitor Photo")
+    st.info("💡 फोटो खींचने के बाद नीचे दी गई डिटेल्स भरें।")
+
 with st.form("production_form"):
-    st.subheader("दैनिक प्रोडक्शन एंट्री (फोटो या मैन्युअल) / Daily Production Entry")
+    st.subheader("दैनिक प्रोडक्शन एंट्री / Daily Production Entry")
     
     date = st.date_input("तारीख / Date")
     worker_name = st.text_input("कारीगर का नाम / Worker Name")
     machine_no = st.selectbox("मशीन नंबर / Machine No.", ["मशीन - १ / Machine - 1", "मशीन - २ / Machine - 2", "मशीन - ३ / Machine - 3", "मशीन - ४ / Machine - 4", "मशीन - ५ / Machine - 5"])
     
-    input_mode = st.radio("डेटा इनपुट का तरीका चुनें / Choose Data Input Method:", ["मैन्युअल टाइप करें / Type Manually", "मॉनिटर फोटो खींचें / Capture Monitor Photo"])
-    
-    design_no = ""
-    production = 0
-    breakage = 0
-    stop_time = "0"
-    frame_time = "0"
-    
-    if input_mode == "मॉनिटर फोटो खींचें / Capture Monitor Photo":
-        monitor_photo = st.camera_input("मशीन के मॉनिटर का फोटो खींचें / Take Monitor Photo")
-        st.info("💡 फोटो खींचने के बाद नीचे दिए गए बॉक्स में वैल्यू भर सकते हैं।")
-        design_no = st.text_input("डिजाइन नंबर (फोटो से / Manual) / Design No.")
-        production = st.number_input("कुल टांके / Total Stitches", min_value=0, step=1000)
-        breakage = st.number_input("टोटल ब्रेकेज / Total Breakage", min_value=0, step=1)
-        stop_time = st.text_input("स्टॉप टाइम / Stop Time (जैसे 15 mins)")
-        frame_time = st.text_input("फ्रेम एंड टाइम / Frame End Time")
-    else:
-        design_no = st.text_input("डिजाइन नंबर / Design No.")
-        production = st.number_input("कुल टांके / Total Stitches", min_value=0, step=1000)
-        breakage = st.number_input("टोटल ब्रेकेज / Total Breakage", min_value=0, step=1)
-        stop_time = st.text_input("स्टॉप टाइम / Stop Time")
-        frame_time = st.text_input("फ्रेम एंड टाइम / Frame End Time")
+    design_no = st.text_input("डिजाइन नंबर / Design No.")
+    production = st.number_input("कुल टांके / Total Stitches", min_value=0, step=1000)
+    breakage = st.number_input("टोटल ब्रेकेज / Total Breakage", min_value=0, step=1)
+    stop_time = st.text_input("स्टॉप टाइम / Stop Time (जैसे 15 mins)")
+    frame_time = st.text_input("फ्रेम एंड टाइम / Frame End Time")
     
     submit_button = st.form_submit_button(label="सेव करो और बोनस गनो / Save and Calculate Bonus")
 
