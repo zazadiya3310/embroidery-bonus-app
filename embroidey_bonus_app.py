@@ -1,57 +1,58 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="એમ્બ્રોડરી મશીન બોનસ કેલ્ક્યુલેટર", layout="centered")
+st.set_page_config(page_title="Embroidery Machine Bonus / एम्ब्रॉयडरी मशीन बोनस", layout="centered")
 
-st.title("🧵 એમ્બ્રોડરી મશીન પ્રોડક્શન અને બોનસ સિસ્ટમ")
+st.title("🧵 Embroidery Machine Production & Bonus System\nएम्ब्रॉयडरी मशीन प्रोडक्शन और बोनस सिस्टम")
 
 if 'data' not in st.session_state:
-    st.session_state.data = pd.DataFrame(columns=['તારીખ', 'કારીગરનું નામ', 'મશીન નંબર', 'પ્રોડક્શન (ટાકા/પીસ)', 'બોનસ (₹)'])
+    st.session_state.data = pd.DataFrame(columns=['तारीख / Date', 'कारीगर का नाम / Worker Name', 'मशीन नंबर / Machine No.', 'कुल प्रोडक्शन (टाका अथवा पीस) / Production', 'बोनस (₹) / Bonus'])
 
 with st.form("production_form"):
-    st.subheader("દૈનિક પ્રોડક્શન એન્ટ્રી")
+    st.subheader("दैनिक प्रोडक्शन एंट्री / Daily Production Entry")
     
-    date = st.date_input("તારીખ")
-    worker_name = st.text_input("કારીગરનું નામ")
-    machine_no = st.selectbox("મશીન નંબર", ["મશીન - ૧", "મશીન - ૨", "મશીન - ૩", "મશીન - ૪", "મશીન - ૫"])
-    production = st.number_input("કુલ પ્રોડક્શન (ટાકા અથવા પીસ)", min_value=0, step=1000)
+    date = st.date_input("तारीख / Date")
+    worker_name = st.text_input("कारीगर का नाम / Worker Name")
+    machine_no = st.selectbox("मशीन नंबर / Machine No.", ["मशीन - १ / Machine - 1", "मशीन - २ / Machine - 2", "मशीन - ३ / Machine - 3", "मशीन - ४ / Machine - 4", "मशीन - ५ / Machine - 5"])
+    production = st.number_input("कुल प्रोडक्शन (टाका अथवा पीस) / Total Production", min_value=0, step=1000)
     
-    submit_button = st.form_submit_button(label="સેવ કરો અને બોનસ ગણો")
+    submit_button = st.form_submit_button(label="सेव करो और बोनस गनो / Save and Calculate Bonus")
 
 if submit_button:
     if worker_name.strip() == "":
-        st.warning("કૃપા કરીને કારીગરનું નામ દાખલ કરો.")
+        st.warning("कृपया कारीगर का नाम दाखिल करें। / Please enter the worker name.")
     else:
         bonus = 0
         if production <= 250000:
             bonus = (production // 1000) * 50
         elif production <= 300000:
-            bonus = (250000 // 1000) * 50 + ((production - 250000) // 1000) * 1
+            bonus = (250000 // 1000) * 50 + ((production - 250000) // 1000) * 75
         else:
-            bonus = (250000 // 1000) * 50 + (50000 // 1000) * 1 + ((production - 300000) // 1000) * 2
+            bonus = (250000 // 1000) * 50 + (50000 // 1000) * 75 + ((production - 300000) // 1000) * 100
+            
+        new_row = pd.DataFrame({
+            'तारीख / Date': [str(date)],
+            'कारीगर का नाम / Worker Name': [worker_name],
+            'मशीन नंबर / Machine No.': [machine_no],
+            'कुल प्रोडक्शन (टाका अथवा पीस) / Production': [production],
+            'बोनस (₹) / Bonus': [bonus]
+        })
         
-        new_row = {
-            'તારીખ': str(date),
-            'કારીગરનું નામ': worker_name,
-            'મશીન નંબર': machine_no,
-            'પ્રોડક્શન (ટાકા/પીસ)': production,
-            'બોનસ (₹)': bonus
-        }
-        
-        st.session_state.data = pd.concat([st.session_state.data, pd.DataFrame([new_row])], ignore_index=True)
-        st.success(f"સફળતાપૂર્વક એન્ટ્રી થઈ ગઈ! આ કારીગરનું કુલ બોનસ: ₹ {bonus}")
+        st.session_state.data = pd.concat([st.session_state.data, new_row], ignore_index=True)
+        st.success(f"बोनस सफलतापूर्वक जोड़ दिया गया है! कुल बोनस: ₹ {bonus} / Bonus calculated successfully! Total Bonus: ₹ {bonus}")
 
-st.divider()
-st.subheader("📊 કુલ પ્રોડક્શન અને બોનસ રિપોર્ટ")
+st.markdown("---")
+st.subheader("📊 कुल प्रोडक्शन और बोनस रिपोर्ट / Production and Bonus Report")
 
 if not st.session_state.data.empty:
     st.dataframe(st.session_state.data, use_container_width=True)
     
-    total_prod = st.session_state.data['પ્રોડક્શન (ટાકા/પીસ)'].sum()
-    total_bonus = st.session_state.data['બોનસ (₹)'].sum()
-    
-    col1, col2 = st.columns(2)
-    col1.metric("કુલ પ્રોડક્શન", f"{total_prod:,}")
-    col2.metric("કુલ ચૂકવવાનું બોનસ", f"₹ {total_bonus:,}")
+    csv = st.session_state.data.to_csv(index=False).encode('utf-8')
+    st.download_button(
+        label="रिपोर्ट डाउनलोड करें (CSV) / Download Report (CSV)",
+        data=csv,
+        file_name='embroidery_bonus_report.csv',
+        mime='text/csv',
+    )
 else:
-    st.info("હજી સુધી કોઈ એન્ટ્રી કરવામાં આવી નથી.")
+    st.info("अभी तक कोई एंट्री की गई नहीं है। / No entries recorded yet.")
