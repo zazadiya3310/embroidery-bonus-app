@@ -23,14 +23,11 @@ if submit_button:
         st.warning("कृपया कारीगर का नाम दाखिल करें। / Please enter the worker name.")
     else:
         bonus = 0
-        if production <= 250000:
-            bonus = (production / 1000) * 50
-        elif production <= 300000:
-            # ૨,૫૦,૦૦૦ સુધી ૫૦ રૂપિયા અને ઉપરના ભાગ પર (૫૦ + ૧) = ૫૧ રૂપિયા
-            bonus = (250000 / 1000) * 50 + ((production - 250000) / 1000) * 51
+        if production > 250000:
+            # 2,50,000 से ऊपर के हर 1000 टांके पर 2 रुपये की गणना
+            bonus = ((production - 250000) / 1000) * 2
         else:
-            # ૩,૦૦,૦૦૦ પછી બે રૂપિયા વધુ એટલે કે (૫૦ + ૨) = ૫૨ રૂપિયા પ્રતિ ૧૦૦૦ ટાંકા
-            bonus = (250000 / 1000) * 50 + (50000 / 1000) * 51 + ((production - 300000) / 1000) * 52
+            bonus = 0
             
         new_row = pd.DataFrame({
             'तारीख / Date': [str(date)],
